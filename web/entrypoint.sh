@@ -19,7 +19,7 @@ then
     if [ -n "$INSTANA_EUM_REPORTING_URL" ]
     then
         echo "Setting reporting url $INSTANA_EUM_REPORTING_URL"
-        sed -e "/<\/script>/ i ineum('reportingUrl', '$INSTANA_EUM_REPORTING_URL');" $TMP_FILE > $BASE_DIR/eum.html
+        sed -e "/<\/script>/ i inuem('reportingUrl', '$INSTANA_EUM_REPORTING_URL');" $TMP_FILE > $BASE_DIR/eum.html
     else
         cp $TMP_FILE $BASE_DIR/eum.html
     fi
@@ -31,6 +31,9 @@ fi
 
 # make sure nginx can access the eum file
 chmod 644 $BASE_DIR/eum.html
+
+# apply environment variables to default.conf
+envsubst < /etc/nginx/conf.d/default.conf.template > /etc/nginx/conf.d/default.conf
 
 exec nginx -g "daemon off;"
 
