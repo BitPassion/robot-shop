@@ -63,10 +63,6 @@ def queueOrder(order):
                 }
             )
 
-    # For screenshot demo requirements optionally add in a bit of delay
-    delay = int(os.getenv('PAYMENT_DELAY_MS', 0))
-    time.sleep(delay / 1000)
-
     headers = {}
     ot.tracer.inject(span.context, ot.Format.HTTP_HEADERS, headers)
     app.logger.info('msg headers {}'.format(headers))
