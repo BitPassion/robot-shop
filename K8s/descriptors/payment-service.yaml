@@ -1,8 +1,12 @@
 apiVersion: v1
 kind: Service
 metadata:
+  annotations:
+    kompose.cmd: kompose -f ../docker-compose.yaml convert
+    kompose.version: 1.10.0 (8bb0907)
+  creationTimestamp: null
   labels:
-    service: payment
+    io.kompose.service: payment
   name: payment
 spec:
   ports:
@@ -10,4 +14,6 @@ spec:
     port: 8080
     targetPort: 8080
   selector:
-    service: payment
+    io.kompose.service: payment
+status:
+  loadBalancer: {}

@@ -1,15 +1,21 @@
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
+  annotations:
+    kompose.cmd: kompose -f ../docker-compose.yaml convert
+    kompose.version: 1.10.0 (8bb0907)
+  creationTimestamp: null
   labels:
-    service: catalogue
+    io.kompose.service: catalogue
   name: catalogue
 spec:
   replicas: 1
+  strategy: {}
   template:
     metadata:
+      creationTimestamp: null
       labels:
-        service: catalogue
+        io.kompose.service: catalogue
     spec:
       containers:
       - image: robotshop/rs-catalogue:latest
@@ -21,11 +27,12 @@ spec:
                 fieldPath: status.hostIP
         ports:
         - containerPort: 8080
-        # resources:
-        #   limits:
-        #     cpu: 200m
-        #     memory: 100Mi
-        #   requests:
-        #     cpu: 100m
-        #     memory: 50Mi
+        resources:
+          limits:
+            cpu: 200m
+            memory: 100Mi
+          requests:
+            cpu: 100m
+            memory: 50Mi
       restartPolicy: Always
+status: {}
