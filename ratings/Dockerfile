@@ -8,12 +8,9 @@ RUN composer install
 #
 # Build the app
 #
-FROM php:7.4-apache
+FROM php:7.3-apache
 
 RUN docker-php-ext-install pdo_mysql
-
-# Enable AutoProfile for PHP which is currently opt-in beta
-RUN echo "instana.enable_auto_profile=1" > "/usr/local/etc/php/conf.d/zzz-instana-extras.ini"
 
 # relax permissions on status
 COPY status.conf /etc/apache2/mods-available/status.conf
