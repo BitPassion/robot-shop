@@ -2,7 +2,6 @@ package com.instana.robotshop.shipping;
 
 import java.util.List;
 import java.util.Map;
-import java.util.Arrays;
 import java.util.ArrayList;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -23,8 +22,6 @@ public class Controller {
 
     private String CART_URL = String.format("http://%s/shipping/", getenv("CART_ENDPOINT", "cart"));
 
-    public static ArrayList bytesGlobal = new ArrayList<byte[]>();
-
     @Autowired
     private CityRepository cityrepo;
 
@@ -36,14 +33,6 @@ public class Controller {
         val = val == null ? def : val;
 
         return val;
-    }
-
-    @GetMapping(path = "/memory")
-    public int memory() {
-        byte[] bytes = new byte[1024 * 1024 * 25];
-        Arrays.fill(bytes,(byte)8);
-        bytesGlobal.add(bytes);
-        return bytesGlobal.size();
     }
 
     @GetMapping("/health")
