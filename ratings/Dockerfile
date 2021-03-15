@@ -1,10 +1,16 @@
+# Use composer to install dependencies
+FROM composer AS build
+
+COPY composer.json /app/
+
+RUN composer install
+
 #
 # Build the app
 #
 FROM php:7.4-apache
 
-RUN apt-get update && apt-get install -yqq unzip libzip-dev \
-    && docker-php-ext-install pdo_mysql opcache zip
+RUN docker-php-ext-install pdo_mysql
 
 # Enable AutoProfile for PHP which is currently opt-in beta
 RUN echo "instana.enable_auto_profile=1" > "/usr/local/etc/php/conf.d/zzz-instana-extras.ini"
@@ -16,10 +22,10 @@ RUN a2enmod rewrite && a2enmod status
 
 WORKDIR /var/www/html
 
-COPY html/ /var/www/html
+# copy dependencies from previous step
+COPY --from=build /app/vendor/ /var/www/html/vendor/
 
-COPY --from=composer /usr/bin/composer /usr/bin/composer
-RUN composer install
+COPY html/ /var/www/html
 
 # This is important. Symfony needs write permissions and we
 # dont know the context in which the container will run, i.e.

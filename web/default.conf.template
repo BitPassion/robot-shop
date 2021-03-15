@@ -18,7 +18,7 @@ server {
     location /images/ {
         expires 5s;
         root   /usr/share/nginx/html;
-        try_files $uri /images/placeholder.png;
+        try_files $uri /images/placeholder.jpg;
     }
 
     #error_page  404              /404.html;
