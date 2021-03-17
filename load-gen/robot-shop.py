@@ -89,7 +89,6 @@ class UserBehavior(HttpUser):
 
     @task
     def error(self):
-        fake_ip = random.choice(self.fake_ip_addresses)
         if os.environ.get('ERROR') == '1':
             print('Error request')
             cart = {'total': 0, 'tax': 0}
