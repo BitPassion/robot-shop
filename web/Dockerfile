@@ -5,22 +5,24 @@ WORKDIR /instana
 
 RUN apk add --update --no-cache curl
 
-RUN if [ -n "$KEY" ]; then nginx_version='1.5.0' \
-    curl --output index.html --user "_:$KEY" https://artifact-public.instana.io/artifactory/shared/com/instana/nginx_tracing/ \
-    nginx_version=$(cat index.html |egrep "a href"| tail -1 | awk '{print $2;}'|sed 's/href="//'|sed 's/\/".*//') \
-    rm index.html \
+ENV ARTI_PATH='https://artifact-public.instana.io/artifactory/shared/com/instana/nginx_tracing/'
+
+RUN if [ -n "$KEY" ]; then \
+    sensor_version=$(curl --user "_:$KEY" ${ARTI_PATH} | grep -o '>[0-9]\+\.[0-9]\+\.[0-9]\+'| cut -f 2 -d '>'|sort -V|tail -1 ); \
+    echo "Downloading sensor version ${sensor_version} for Nginx version 1.21.6" ; \
     curl \
-     --output instana.zip \
-     --user "_:$KEY" \
-     https://artifact-public.instana.io/artifactory/shared/com/instana/nginx_tracing/$nginx_version/linux-amd64-nginx-1.20.1.zip && \
-     unzip instana.zip && \
-     mv glibc-libinstana_sensor.so libinstana_sensor.so && \
-     mv glibc-nginx-1.20.1-ngx_http_ot_module.so ngx_http_opentracing_module.so; \
+    --output instana.zip \
+    --user "_:$KEY" \
+    ${ARTI_PATH}/${sensor_version}/linux-amd64-glibc-nginx-1.21.6.zip && \
+    unzip instana.zip && \
+    mv glibc-libinstana_sensor.so libinstana_sensor.so && \
+    mv glibc-nginx-1.21.6-ngx_http_ot_module.so ngx_http_opentracing_module.so; \
     else echo "KEY not provided. Not adding tracing"; \
-        touch dummy.so; \
+    touch dummy.so; \
     fi
 
-FROM nginx:1.20.1
+
+FROM nginx:1.21.6
 
 EXPOSE 8080
 
